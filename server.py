@@ -1,10 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Author: sammko
-# @Date:   2014-03-26 17:59:06
-# @Last Modified by:   sammko
-# @Last Modified time: 2014-04-17 11:49:27
-
 import socket
 import threading
 import time

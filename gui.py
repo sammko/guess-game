@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Author: sammko
-# @Date:   2014-04-13 20:10:00
-# @Last Modified by:   sammko
-# @Last Modified time: 2014-04-22 20:23:24
 import ast
 import gtk
 import socket
