@@ -3,7 +3,7 @@
 # @Author: sammko
 # @Date:   2014-04-13 20:10:00
 # @Last Modified by:   sammko
-# @Last Modified time: 2014-04-22 20:15:34
+# @Last Modified time: 2014-04-22 20:23:24
 import ast
 import gtk
 import socket
@@ -425,9 +425,11 @@ pos = (400, 400)
 try:
     with open('ip') as f:
         TCP_IP = f.read().strip()
+    if len(TCP_IP) == 0:
+        raise IOError
 except IOError:
     try:       
-        TCP_IP = sys.argv[1]
+        TCP_IP = sys.argv[1].strip()
     except IndexError:
         TCP_IP = '127.0.0.1'
         pass
