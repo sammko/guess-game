@@ -3,7 +3,7 @@
 # @Author: sammko
 # @Date:   2014-04-13 20:10:00
 # @Last Modified by:   sammko
-# @Last Modified time: 2014-04-22 19:48:33
+# @Last Modified time: 2014-04-22 19:59:42
 import ast
 import gtk
 import socket
@@ -414,8 +414,6 @@ except IOError:
         TCP_IP = '127.0.0.1'
         pass
     pass
-
-print TCP_IP
 
 shared = SharedData()
 
