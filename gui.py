@@ -3,7 +3,7 @@
 # @Author: sammko
 # @Date:   2014-04-13 20:10:00
 # @Last Modified by:   sammko
-# @Last Modified time: 2014-04-22 19:59:42
+# @Last Modified time: 2014-04-22 20:15:34
 import ast
 import gtk
 import socket
@@ -11,6 +11,24 @@ import sys
 import threading
 import time
 
+
+class CStrings():
+    NEXTROUND = "Next round starts in %s seconds."
+    SELECTJOB = "Select your job"
+    ENTRYJOB = "Job:"
+    ENTRYDESCRIPTION = "Description:"
+    ID = "Your ID is "
+    POINTS = "You currently have %s points"
+    SUBMIT = "Submit"
+    GUESSTITLE = "You can guess now"
+    NOTGUESSED = "Your job has not been guessed yet."
+    GUESSED = "Your job has been guessed."
+    GUESSBTN = "Guess it!"
+    NOTHINGGUESS = "You have nothing else left to guess.."
+    TOOSHORT = "Your entry appears to be too short."
+    WAIT = "Waiting for other players..."
+
+Strings = CStrings()
 
 class Packet():
 
@@ -115,32 +133,32 @@ class SelectWindow(gtk.Window):
 
         self.flag = False
         gtk.Window.__init__(self)
-        self.set_title("Select your job")
+        self.set_title(Strings.SELECTJOB)
         self.set_border_width(12)
 
         self.vbox = gtk.VBox(spacing=6)
         self.add(self.vbox)
 
         hbox = gtk.HBox(spacing=6)
-        label = gtk.Label("Job:")
+        label = gtk.Label(Strings.ENTRYJOB)
         hbox.pack_start(label, False, False, 0)
         self.jobfield = gtk.Entry()
         hbox.pack_start(self.jobfield, True, True, 0)
         self.vbox.pack_start(hbox, True, True, 0)
 
         hbox = gtk.HBox(spacing=6)
-        label = gtk.Label("Description:")
+        label = gtk.Label(Strings.ENTRYDESCRIPTION)
         hbox.pack_start(label, False, False, 0)
         self.descfield = gtk.Entry()
         hbox.pack_start(self.descfield, True, True, 0)
         self.vbox.pack_start(hbox, True, True, 0)
 
-        label = gtk.Label("Your ID is " + str(shared.idn))
+        label = gtk.Label(Strings.ID + str(shared.idn))
         self.vbox.pack_start(label, False, False, 0)
-        label = gtk.Label("You currently have " + str(shared.pts) + " points")
+        label = gtk.Label(Strings.POINTS % str(shared.pts))
         self.vbox.pack_start(label, False, False, 0)
 
-        button = gtk.Button("Submit")
+        button = gtk.Button(Strings.SUBMIT)
         button.connect("clicked", self.button_clicked)
         self.vbox.pack_start(button, False, False, 0)
 
@@ -180,7 +198,7 @@ class GuessWindow(gtk.Window):
 
     def __init__(self, text):
         gtk.Window.__init__(self)
-        self.set_title("You can guess now")
+        self.set_title(Strings.GUESSTITLE)
         self.set_border_width(10)
 
         self.entries = []
@@ -189,7 +207,7 @@ class GuessWindow(gtk.Window):
         self.vbox = gtk.VBox(spacing=6)
         self.add(self.vbox)
 
-        self.sglabel = gtk.Label("Your job has not been guessed yet.")
+        self.sglabel = gtk.Label(Strings.NOTGUESSED)
         self.vbox.pack_start(self.sglabel, False, False, 0)
         sep = gtk.HSeparator()
         self.vbox.pack_start(sep, False, True, 4)
@@ -204,7 +222,7 @@ class GuessWindow(gtk.Window):
                 entry = gtk.Entry()
                 entry.set_size_request(150, -1)
                 self.entries[i] = entry
-                btn = gtk.Button("Guess it!")
+                btn = gtk.Button(Strings.GUESSBTN)
                 btn.set_name(str(i))
                 entry.connect("activate", self.emulate_clicked, btn)
                 self.buttons[i] = btn
@@ -213,13 +231,13 @@ class GuessWindow(gtk.Window):
                 hbox.pack_start(btn, False, False, 0)
                 self.vbox.pack_start(hbox, True, True, 0)
 
-        self.label = gtk.Label("You currently have " + str(shared.pts) + " points")
+        self.label = gtk.Label(Strings.POINTS % str(shared.pts))
         self.vbox.pack_start(self.label, False, False, 0)
 
     def alldone(self):
         sep = gtk.HSeparator()
         self.vbox.pack_start(sep, False, True, 4)
-        self.nlabel = gtk.Label("You have nothing else left to guess..")
+        self.nlabel = gtk.Label(Strings.NOTHINGGUESS)
         self.vbox.pack_start(self.nlabel, False, False, 0)
         self.spinner = gtk.Spinner()
         self.spinner.set_size_request(35, 35)
@@ -230,7 +248,7 @@ class GuessWindow(gtk.Window):
         sep.show()
 
     def selfguess(self):
-        self.sglabel.set_text("Your job has been guessed.")
+        self.sglabel.set_text(Strings.GUESSED)
 
     def nextr(self):
         self.spinner.hide()
@@ -240,12 +258,12 @@ class GuessWindow(gtk.Window):
         self.prog = gtk.ProgressBar()
         self.vbox.pack_start(self.prog, False, True, 0)
         self.prog.show()
-        self.prog.set_text("Next round starting in 5 seconds.")
+        self.prog.set_text(Strings.NEXTROUND % '5')
         gtk.timeout_add(50, updateprog)
 
     def updateprog(self):
         self.prog.set_fraction(self.time/100.0)
-        self.prog.set_text("Next round starts in " + str(int(self.time*0.05)+1) + " seconds.")
+        self.prog.set_text(Strings.NEXTROUND % str(int(self.time*0.05)+1))
         self.time -= 1.0
         if self.time > 0:
             gtk.timeout_add(50, updateprog)
@@ -361,13 +379,13 @@ def submit(sender, job, desc):
         sw.show_all()
         sender.destroy()
     else:
-        sender.warn("Your entry appears to be too short.")
+        sender.warn(Strings.TOOSHORT)
 
 
 def checkdead():
     gtk.timeout_add(50, checkdead)
     if shared.gws:
-        shared.gw.label.set_text("You currently have " + str(shared.pts) + " points.")
+        shared.gw.label.set_text(Strings.POINTS % str(shared.pts))
     if shared.v == 0:
         shared.gw = GuessWindow(shared.des)
         connect(shared.gw)
@@ -435,7 +453,7 @@ connect(w)
 w.move(pos[0], pos[1])
 w.show_all()
 
-sw = SpinnerWindow("Waiting for other players...")
+sw = SpinnerWindow(Strings.WAIT)
 connect(sw)
 
 n = NetThread(shared)
